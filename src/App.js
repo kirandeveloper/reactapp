@@ -5,14 +5,17 @@ import ReactDOM from 'react-dom';
 import styles from './myStyles.module.css';  
 import styled from 'styled-components'; 
 import PropTypes from 'prop-types';   
+import { Router, Route, Link, browserHistory, IndexRoute } from 'react-router'
+var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 class App extends React.Component {  
   
-  constructor() {  
-      super();  
+  constructor(props) {  
+      super(props);  
       this.state = {  
          displayBio: true,
          data1: 'Enter first name',
+         data2: '',
          msg: "Welcome to JavaTpoint", 
 
          personGoing: true,  
@@ -34,8 +37,27 @@ class App extends React.Component {
             {    
                "name":"Java Fullstack"          
             }  
-         ]  
+         ],
+
+         datak:[
+            {
+               id: 1,
+               component: 'DNFS'               
+            },
+            {
+               id: 2,
+               component: 'DDM'               
+            },
+            {
+               id: 3,
+               component: 'JavaFS'               
+            }
+         ],
+
+         items1: ['hello', 'world', 'click', 'me']  
       } 
+
+
       this.handleEvent = this.handleEvent.bind(this); 
 
       this.updateSetState = this.updateSetState.bind(this);   
@@ -59,7 +81,21 @@ class App extends React.Component {
 
       this.handleChange2 = this.handleChange.bind(this);
       this.handleSubmit2 = this.handleSubmit.bind(this);
+
+      this.updateState = this.updateState.bind(this);
+      this.clearInput = this.clearInput.bind(this);
+
+      this.handleAdd = this.handleAdd.bind(this);  
+
    }  
+
+   updateState(e) {
+      this.setState({data2: e.target.value});
+   }
+   clearInput() {
+      this.setState({data2: ''});
+      ReactDOM.findDOMNode(this.refs.myInput).focus();
+   }
 
    updateSubmit(event) {  
       alert('You have entered the UserName and CompanyName successfully.');  
@@ -106,6 +142,20 @@ class App extends React.Component {
           msg:"My first ReactJS tutorial"  
        });  
    }  
+
+  //animation
+   handleAdd() {  
+    const newItems = this.state.items.concat([  
+      prompt('Enter Item Name')  
+    ]);  
+    this.setState({items: newItems});  
+  }  
+  
+  handleRemove(i) {  
+    let newItems = this.state.items.slice();  
+    newItems.splice(i, 1);  
+    this.setState({items: newItems});  
+  }  
 
     handleEvent(){  
     console.log(this.props);  
@@ -256,14 +306,22 @@ class App extends React.Component {
             </div>  
               ) : null;  
 
+    const defaultValuesByTopic = 
+    {
+      training: 'I would like some training',
+      consulting: 'I have consulting needs',
+      question: 'I have some questions',
+    }
+
+
     return (  
 
       <div>  
-        
+        <h1>Welcome to ReactJS</h1>
         <hr/>
-        <h1 style={{color: "White"}}>Inline CSS</h1>  
-        <h1 style={mystyle}>Link CSS</h1>  
-        <h1 className={styles.mystyle}>Embeded CSS</h1>  
+        <h3 style={{color: "White"}}>Inline CSS</h3>  
+        <h3 style={mystyle}>Link CSS</h3>  
+        <h3 className={styles.mystyle}>Embeded CSS</h3>  
         <p className={styles.parastyle}>Embeded CSS</p>  
                
             <Title>Styled Components Example</Title>  
@@ -282,21 +340,23 @@ class App extends React.Component {
         </div> 
         <hr/>
         <h1>Functional Components</h1>
-        <First/>  
-        <Second/>  
+        <Home/>  
+        <About/>  
         <hr/>
         <h1> React State </h1>  
         { bio }  
         <h1> Default Props </h1>
         <div>  
-            <h1> Welcome to {this.props.name} </h1>    
+            <h1> Welcome to {this.props.name} </h1>   
+            <h1>{this.props.headerProp}</h1>
+            <h2>{this.props.contentProp}</h2>
         </div>  
         <hr/>
         <h1> ReactJS Props Validator </h1>
         <div>  
               <h1>ReactJS Props validation example</h1>  
-              <table>  
-                  <tr>  
+              <table className="table table-striped">  
+                  <tr className="thead-light">  
                       <th>Type</th>  
                       <th>Value</th>  
                       <th>Valid</th>  
@@ -331,23 +391,23 @@ class App extends React.Component {
         <hr/>
         <h1> ReactJS Constructor </h1>
         <h2>React Constructor Example</h2>  
-        <input type ="text" value={this.state.data1} />  
-        <button onClick={this.handleEvent}>Please Click</button>  
+        <input type ="text" class="form-control" value={this.state.data1} />  
+        <button className="btn btn-success" onClick={this.handleEvent}>Please Click</button>  
          <p> Name: { this.state.data1 }</p> 
-         <input type ="text" value={this.state.data1} />  
-        <button onClick={this.handleEvent}>Please Click</button>  
+         <input type ="text" class="form-control" value={this.state.data1} />  
+        <button className="btn btn-success" onClick={this.handleEvent}>Please Click</button>  
         <hr/>
         <h1>setState</h1>
         <div>  
              <h1>{this.state.msg}</h1>  
-             <button onClick = {this.updateSetState}>SET STATE</button>  
+             <button className="btn btn-success" onClick = {this.updateSetState}>SET STATE</button>  
          </div>
         <hr/>
         <h1>forceUpdate</h1>
         <div>  
              <h1>Example to generate random number</h1>  
              <h3>Random number: {Math.random()}</h3>  
-             <button onClick = {this.forceUpdateState}>ForceUpdate</button>  
+             <button  className="btn btn-info" onClick = {this.forceUpdateState}>ForceUpdate</button>  
          </div>  
         <hr/>
         <h1>React Component Life-Cycle</h1>
@@ -356,27 +416,27 @@ class App extends React.Component {
             <h2> 
              <a onClick={this.changeState.bind(this)}>Press Here!</a> 
             </h2> 
-            </div>
+        </div>
         <hr/>
         <form onSubmit={this.updateSubmit}>  
             <h1>Uncontrolled Form Example</h1>  
             <label>Name:  
-                <input type="text" ref={this.input} />  
+                <input type="text" className="form-control" ref={this.input} />  
             </label>  
             <label>  
                 CompanyName:  
-                <input type="text" ref={this.input} />  
+                <input type="text" className="form-control" ref={this.input} />  
             </label>  
-            <input type="submit" value="Submit" />  
+            <input type="submit" value="Submit"  className="btn btn-success" />  
           </form>
         <hr/>
         <form onSubmit={this.handleSubmit}>  
             <h1>Controlled Form Example</h1>  
             <label>  
                 Name:  
-                <input type="text" value={this.state.value} onChange={this.handleChange} />  
+                <input type="text" className="form-control" value={this.state.value} onChange={this.handleChange} />  
             </label>  
-            <input type="submit" value="Submit" />  
+            <input type="submit" value="Submit"  className="btn btn-success" />  
          </form>  
         <hr/>
         <form>  
@@ -387,12 +447,13 @@ class App extends React.Component {
                     name="personGoing"  
                     type="checkbox"  
                     checked={this.state.personGoing}  
-                    onChange={this.handleInputChange} />  
+                    onChange={this.handleInputChange}
+                     />  
              </label>  
              <br />  
              <label>  
                  Number of persons:  
-                 <input name="numberOfPersons" type="number"value={this.state.numberOfPersons}  
+                 <input className="form-control" name="numberOfPersons" type="number"value={this.state.numberOfPersons}  
                  onChange={this.handleInputChange} />  
              </label>  
          </form>
@@ -400,21 +461,21 @@ class App extends React.Component {
         <div>  
                 <h2>Simple Event Example</h2>  
                 <label htmlFor="name">Enter company name: </label>  
-                <input type="text" id="companyName" onChange={this.changeText.bind(this)}/>  
+                <input className="form-control" type="text" id="companyName" onChange={this.changeText.bind(this)}/>  
                 <h4>You entered: { this.state.companyName }</h4>  
             </div>
         <hr/>
         <form onSubmit={this.handleSubmit1}>
             <label>
               Pick your favorite flavor:
-              <select value={this.state.value} onChange={this.handleChange}>
+              <select className="form-control" value={this.state.value} onChange={this.handleChange}>
                 <option value="grapefruit">Grapefruit</option>
                 <option value="lime">Lime</option>
                 <option value="coconut">Coconut</option>
                 <option value="mango">Mango</option>
               </select>
             </label>
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Submit" className="btn btn-success" />
           </form>
         <hr/>
         <form onSubmit={event => this.handleSubmitForm(event)}>
@@ -422,9 +483,9 @@ class App extends React.Component {
             <br />
             <textarea cols="45" rows="5"
               value={this.state.content}
-              onChange={event => this.handleChange1(event)} />
+              onChange={event => this.handleChange1(event)} className="form-control"  />
             <br />
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Submit" className="btn btn-info" />
             <p>{this.state.content}</p>
           </form>
           <hr/>
@@ -483,7 +544,7 @@ class App extends React.Component {
                 /> DDM
               </label>
                
-              <input type="submit" value="Submit" />
+              <input type="submit" value="Submit" className="btn btn-info" />
             </form>
             <form onSubmit={this.onSubmit}>
               <div className="form-check">
@@ -548,6 +609,31 @@ class App extends React.Component {
               </div>
             </form>
           <hr/>
+          <h1>Ref</h1>
+          <p>when click on button input will be clear</p>
+           <input className="form-control" value = {this.state.data2} onChange = {this.updateState} 
+               ref = "myInput"></input> 
+           <button className="btn btn-success" onClick = {this.clearInput}>CLEAR</button>
+            
+          <hr/>
+          <h1>Key</h1>
+          <div>
+            <div>
+               {this.state.datak.map((dynamicComponent, i) => <Content 
+                  key = {i} componentData = {dynamicComponent}/>)}
+            </div>
+         </div>
+
+          <hr/>
+          <h1>Animation</h1>
+          <div>
+            <ReactCSSTransitionGroup transitionName = "example"
+               transitionAppear = {true} transitionAppearTimeout = {500}
+               transitionEnter = {false} transitionLeave = {false} >
+                     
+               <h1>My Element...</h1>
+            </ReactCSSTransitionGroup>
+          </div>  
 
           <hr/>
       </div>   
@@ -556,21 +642,22 @@ class App extends React.Component {
 }  
 
 
-class First extends React.Component {  
+
+
+class Home extends React.Component {  
    render() {  
       return (  
          <div>  
-            <h1>JavaTpoint</h1>  
+            <h1>Home...</h1>  
          </div>  
       );  
    }  
 }  
-class Second extends React.Component {  
+class About extends React.Component {  
    render() {  
       return (  
          <div>  
-            <h2>www.javatpoint.com</h2>  
-            <p>This websites contains the great CS tutorial.</p>  
+            <h1>About...</h1> 
          </div>  
       );  
    }  
@@ -594,6 +681,17 @@ class List extends React.Component {
       );  
    }  
 }  
+
+class Content extends React.Component {
+   render() {
+      return (
+         <div>
+            <div>{this.props.componentData.component}</div>
+            <div>{this.props.componentData.id}</div>
+         </div>
+      );
+   }
+}
 
 App.defaultProps = {  
    name: "My first Props"  

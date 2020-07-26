@@ -58,3 +58,10 @@ body {
   font-size: 35px;  
   text-align: center;  
 } 
+.example-appear {
+   opacity: 0.04;
+}
+.example-appear.example-appear-active {
+   opacity: 2;
+   transition: opacity 50s ease-in;
+}
